@@ -128,6 +128,19 @@ join interviews i on i.id = e.interview_id
 join contacts c on c.id = i.contact_id
 group by e.assumption_id;
 
+-- [FIX] v_evidence_score: playbook 7.2 says interviews that fail the screener are not counted,
+-- so their evidence must not score an assumption either.
+create or replace view v_evidence_score as
+select e.assumption_id,
+       sum(case e.grade when 'S' then 10 when 'A' then 3 when 'B' then 1 else 0 end
+           * case when c.is_stranger then 1.5 else 1 end) as score,
+       count(distinct i.contact_id) as distinct_sources
+from evidence e
+join interviews i on i.id = e.interview_id
+join contacts c on c.id = i.contact_id
+where i.qualified
+group by e.assumption_id;
+
 -- [FIX] Supabase grants anon/authenticated full access to public tables and views by default.
 -- RLS blocks the tables, but views run with their owner's rights and skip RLS, so anon could
 -- read the K1-K5 aggregates. Revoke the API roles; the dashboard (postgres) and service_role keep access.

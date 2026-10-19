@@ -14,3 +14,7 @@ alter table waitlist_signups enable row level security;
 create policy "anon insert" on waitlist_signups
   for insert to anon with check (true);
 -- อย่าเปิด select policy — ป้องกันคนอ่านอีเมลคนอื่น (PDPA-friendly)
+
+-- [FIX] Supabase grants anon full table access by default. Anon only needs to insert.
+revoke all on waitlist_signups from anon;
+grant insert on waitlist_signups to anon;
