@@ -18,8 +18,10 @@ SAMPLE_INTERVIEWS = os.path.join(PY_DIR, "sample", "interviews.csv")
 SAMPLE_OFFERS = os.path.join(PY_DIR, "sample", "offers.csv")
 HEADER = ("id,qualified,freq_weekly_plus,paying_for_workaround,"
           "pain_score,is_stranger,source_community,advanced_commitment")
+OFFER_HEADER = "id,price_thb,paid,is_stranger,reason"
 
-# Expected output of `python3 kpi.py interviews.csv offers.csv 180 7` (playbook App. C.1)
+# Expected output of `python3 kpi.py interviews.csv offers.csv 180 7`.
+# The sample fails two gates that preregistration.md sets for GO: 12 offers (<15) and fbB at 33% (>30%).
 EXPECTED_SAMPLE_KPI = [
     "qualified interviews n=15 (need >=10; target 15)",
     "K1 weekly+: 10/15 = 67%  CI 42%-85%  threshold>=8 -> PASS",
@@ -27,9 +29,11 @@ EXPECTED_SAMPLE_KPI = [
     "K5 pain mean 6.5/10 (opinion-grade; corroborating only)",
     "strangers 13/15 = 87% (target >=50%)",
     "largest community 'fbB' = 33% (cap 30%)",
+    "buyers not checked: add an is_buyer column (1/0) to interviews.csv",
     "K3 offers 12, paid 2 (strangers 2)",
     "K4 landing 7/180 = 3.9%  CI 1.9-7.8%",
-    "TIER: GO-CONDITIONAL (check warm list>=5)",
+    "GO blocked by: K3 needs >=15 offers (have 12); largest community 'fbB' 33% > 30%",
+    "TIER: PIVOT or extend per PART 7.4 / K6",
 ]
 
 
@@ -81,8 +85,8 @@ class WilsonTests(unittest.TestCase):
 
 class SampleDataTests(unittest.TestCase):
     def test_row_counts(self):
-        self.assertEqual(len(kpi.read(SAMPLE_INTERVIEWS)), 16)
-        self.assertEqual(len(kpi.read(SAMPLE_OFFERS)), 12)
+        self.assertEqual(len(kpi.read(SAMPLE_INTERVIEWS)[1]), 16)
+        self.assertEqual(len(kpi.read(SAMPLE_OFFERS)[1]), 12)
 
 
 class FunnelTests(unittest.TestCase):
@@ -158,7 +162,74 @@ class KpiEdgeCaseTests(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr)
         self.assertNotIn("Traceback", proc.stderr)
         self.assertIn("K4 landing 0/0 = n/a", proc.stdout)
-        self.assertIn("TIER: GO-CONDITIONAL", proc.stdout)
+        self.assertIn("TIER: PIVOT or extend", proc.stdout)
+
+
+class TierTests(unittest.TestCase):
+    """Stage 4 tier rules from preregistration.md: K1-K3 plus the extra GO criteria."""
+
+    def run_case(self, interviews, offers, header=HEADER):
+        with tempfile.TemporaryDirectory() as tmp:
+            ip = os.path.join(tmp, "interviews.csv")
+            op = os.path.join(tmp, "offers.csv")
+            with open(ip, "w", encoding="utf-8", newline="") as f:
+                f.write(header + "\n" + "\n".join(interviews) + "\n")
+            with open(op, "w", encoding="utf-8", newline="") as f:
+                f.write(OFFER_HEADER + "\n" + "\n".join(offers) + "\n")
+            proc = run_script("kpi.py", ip, op, cwd=tmp)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertNotIn("Traceback", proc.stderr)
+        return proc.stdout
+
+    @staticmethod
+    def interview_rows(n, weekly, paying, strangers, communities, buyers=None):
+        rows = []
+        for i in range(n):
+            row = (f"{i + 1},1,{int(i < weekly)},{int(i < paying)},6,"
+                   f"{int(i < strangers)},{communities[i % len(communities)]},1")
+            if buyers is not None:
+                row += f",{int(i < buyers)}"
+            rows.append(row)
+        return rows
+
+    @staticmethod
+    def offer_rows(m, paid_stranger=1):
+        return [f"1,990,1,{paid_stranger},"] + [f"{i},990,0,1,no" for i in range(2, m + 1)]
+
+    BALANCED = ["a", "b", "c", "d", "e"]  # 3 of 15 each = 20%
+
+    def test_under_ten_interviews_is_insufficient(self):
+        out = self.run_case(self.interview_rows(8, 8, 8, 8, self.BALANCED), self.offer_rows(15))
+        self.assertIn("TIER: INSUFFICIENT DATA", out)
+
+    def test_go_conditional_when_every_gate_passes(self):
+        out = self.run_case(self.interview_rows(15, 12, 8, 10, self.BALANCED), self.offer_rows(15))
+        self.assertIn("TIER: GO-CONDITIONAL", out)
+        self.assertNotIn("GO blocked by", out)
+        self.assertIn("buyers not checked", out)
+
+    def test_fewer_than_15_offers_blocks_go(self):
+        out = self.run_case(self.interview_rows(15, 12, 8, 10, self.BALANCED), self.offer_rows(12))
+        self.assertIn("GO blocked by: K3 needs >=15 offers (have 12)", out)
+        self.assertIn("TIER: PIVOT or extend", out)
+
+    def test_community_cap_blocks_go(self):
+        communities = ["a"] * 6 + ["b", "c", "d", "e", "f", "g", "h", "i", "j"]
+        out = self.run_case(self.interview_rows(15, 12, 8, 10, communities), self.offer_rows(15))
+        self.assertIn("largest community 'a' 40% > 30%", out)
+        self.assertIn("TIER: PIVOT or extend", out)
+
+    def test_stranger_share_blocks_go(self):
+        out = self.run_case(self.interview_rows(15, 12, 8, 6, self.BALANCED), self.offer_rows(15))
+        self.assertIn("strangers 40% < 50%", out)
+        self.assertIn("TIER: PIVOT or extend", out)
+
+    def test_buyer_share_blocks_go_when_column_present(self):
+        header = HEADER + ",is_buyer"
+        rows = self.interview_rows(15, 12, 8, 10, self.BALANCED, buyers=5)
+        out = self.run_case(rows, self.offer_rows(15), header=header)
+        self.assertIn("buyers 33% < 60%", out)
+        self.assertIn("TIER: PIVOT or extend", out)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ตรวจกลยุทธ์ EA ก่อนเปิดบัญชีจริง</title>
+<style>
+:root {
+  --bg: #f7f7f5; --fg: #1d1d1b; --muted: #5f5f5a; --card: #ffffff;
+  --accent: #1f5fbf; --line: #d9d9d3; --draft-bg: #fff4dc; --draft-fg: #7a4f00;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141414; --fg: #f2f2ee; --muted: #a9a9a2; --card: #1e1e1d;
+    --accent: #7fb0ff; --line: #34342f; --draft-bg: #3a2f14; --draft-fg: #ffd27a;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141414; --fg: #f2f2ee; --muted: #a9a9a2; --card: #1e1e1d;
+  --accent: #7fb0ff; --line: #34342f; --draft-bg: #3a2f14; --draft-fg: #ffd27a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: "Noto Sans Thai", "Sarabun", "Tahoma", system-ui, sans-serif;
+  line-height: 1.6;
+}
+main { max-width: 480px; margin: 0 auto; padding: 16px; }
+.draft {
+  background: var(--draft-bg); color: var(--draft-fg); border-radius: 8px;
+  padding: 10px 12px; font-size: 14px; margin-bottom: 16px;
+}
+.badge {
+  display: inline-block; font-size: 13px; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; margin: 0 0 12px;
+}
+h1 { font-size: 26px; line-height: 1.3; margin: 0 0 12px; }
+.sub { color: var(--muted); margin: 0 0 20px; }
+.benefits { list-style: none; padding: 0; margin: 0 0 24px; }
+.benefits li {
+  background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 10px;
+}
+.cta { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.cta h2 { font-size: 18px; margin: 0 0 12px; }
+label { display: block; font-size: 14px; margin-bottom: 12px; }
+input[type="email"], textarea {
+  width: 100%; margin-top: 6px; padding: 10px; font: inherit; color: var(--fg);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+}
+.consent { display: flex; gap: 8px; align-items: flex-start; color: var(--muted); }
+.consent input { margin-top: 4px; }
+button {
+  width: 100%; padding: 12px; font: inherit; font-weight: 600; color: #fff;
+  background: var(--accent); border: 0; border-radius: 8px; cursor: pointer;
+}
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+#msg { font-size: 14px; color: var(--muted); min-height: 1.5em; margin: 10px 0 0; }
+footer { font-size: 13px; color: var(--muted); margin: 24px 0 8px; }
+.small { font-size: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="draft">
+    ร่างสำหรับตรวจ ยังไม่เผยแพร่ ก่อนเผยแพร่ต้องแทนข้อความในวงเล็บ [ ] ด้วยคำจากสัมภาษณ์จริง
+    ได้คำตอบจากทนายเรื่องประกาศความเป็นส่วนตัว และลบกล่องนี้ออก
+  </div>
+
+  <p class="badge">ต้นแบบ / early access ไม่ใช่คำแนะนำการลงทุน และยังไม่เก็บเงินในหน้านี้</p>
+  <h1 id="headline">หยุดเปิดบัญชีจริงด้วยกลยุทธ์ที่ยังไม่ผ่านการตรวจ</h1>
+  <p class="sub">สำหรับนักพัฒนา EA บน MT5 ที่ทำ backtest เองแล้ว ส่งผลทดสอบมา รับรายงานความทนทานตามความเหมาะสมของกลยุทธ์</p>
+
+  <ul class="benefits">
+    <li>[คำพูดลูกค้า 1 จากสัมภาษณ์]</li>
+    <li>[คำพูดลูกค้า 2 จากสัมภาษณ์]</li>
+    <li>[คำพูดลูกค้า 3 จากสัมภาษณ์]</li>
+  </ul>
+
+  <section class="cta">
+    <h2>ขอสิทธิ์ early access</h2>
+    <form id="signup">
+      <label>อีเมล
+        <input type="email" name="email" required autocomplete="email">
+      </label>
+      <label>ตอนนี้คุณเช็กกลยุทธ์ก่อนเปิดจริงยังไง?
+        <textarea name="biggest_pain" rows="3" maxlength="500"></textarea>
+      </label>
+      <label class="consent">
+        <input type="checkbox" name="consent" required>
+        <span>ยินยอมให้ [ชื่อผู้ให้บริการ] เก็บอีเมลและข้อความนี้เพื่อติดต่อเรื่องการทดสอบบริการ ฉันยกเลิกได้ทุกเมื่อ</span>
+      </label>
+      <button type="submit" id="submitBtn" disabled>ขอสิทธิ์ early access</button>
+      <p id="msg" role="status"></p>
+    </form>
+  </section>
+
+  <footer>
+    <a href="#privacy">ประกาศความเป็นส่วนตัว</a> · [ชื่อผู้ให้บริการ] · [อีเมลติดต่อ]
+    <p id="privacy" class="small">[วางข้อความประกาศความเป็นส่วนตัวจาก consent_and_notice_draft.md หลังทนายตรวจแล้ว]</p>
+  </footer>
+</main>
+
+<script>
+// POST endpoint that inserts one row into waitlist_signups (see sql/02_waitlist.sql).
+// Empty string keeps the form disabled, so nothing is sent until an endpoint is configured.
+const ENDPOINT = "";
+
+const VARIANTS = {
+  a: "หยุดเปิดบัญชีจริงด้วยกลยุทธ์ที่ยังไม่ผ่านการตรวจ",
+  b: "รู้ก่อนเปิดจริงว่ากลยุทธ์ของคุณรอดหรือเปล่า โดยไม่ต้องเดา",
+};
+
+const params = new URLSearchParams(location.search);
+const variant = params.get("v") === "b" ? "b" : "a";
+document.getElementById("headline").textContent = VARIANTS[variant];
+
+const form = document.getElementById("signup");
+const submitBtn = document.getElementById("submitBtn");
+const msg = document.getElementById("msg");
+
+if (ENDPOINT) {
+  submitBtn.disabled = false;
+} else {
+  msg.textContent = "ยังไม่ได้เชื่อมฐานข้อมูล ฟอร์มนี้ยังส่งไม่ได้";
+}
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  submitBtn.disabled = true;
+  msg.textContent = "กำลังส่ง...";
+  const data = new FormData(form);
+  // waitlist_signups has no variant column, so the A/B arm is stored inside source.
+  const body = {
+    email: data.get("email"),
+    biggest_pain: data.get("biggest_pain") || null,
+    source: `${params.get("src") || "direct"}|v=${variant}`,
+    utm: location.search || null,
+  };
+  try {
+    const res = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(String(res.status));
+    form.reset();
+    msg.textContent = "ได้รับแล้ว ขอบคุณครับ/ค่ะ";
+  } catch (err) {
+    submitBtn.disabled = false;
+    msg.textContent = "ส่งไม่สำเร็จ ลองใหม่อีกครั้ง";
+  }
+});
+</script>
+</body>
+</html>
