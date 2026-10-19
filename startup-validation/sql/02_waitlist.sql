@@ -1,3 +1,5 @@
+-- Source: playbook section 2.5 (startup-validation-playbook-v3_1.md, lines 340-353), copied verbatim.
+-- Requires the Supabase "anon" role (created locally for tests; exists by default on Supabase).
 create table waitlist_signups (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
