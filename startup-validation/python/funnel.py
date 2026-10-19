@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """funnel.py - reverse funnel: customers wanted -> DMs needed.
-Usage: python3 funnel.py 3   (override rates with env or edit RATES)"""
+Usage: python3 funnel.py 3   (edit RATES to change conversion rates)"""
 import math, sys
 RATES = [("reply", 0.25), ("accept", 0.65), ("show", 0.75),
          ("qualified", 0.60), ("offer", 0.70), ("close", 0.15)]
