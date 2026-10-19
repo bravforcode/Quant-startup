@@ -1,0 +1,17 @@
+id,qualified,freq_weekly_plus,paying_for_workaround,pain_score,is_stranger,source_community,advanced_commitment
+1,1,1,1,8,1,fbA,2
+2,1,1,0,6,1,fbA,2
+3,1,0,0,4,1,fbB,0
+4,1,1,1,7,1,fbB,3
+5,1,1,0,7,0,friend,2
+6,1,0,1,5,1,line,1
+7,1,1,1,8,1,line,4
+8,1,1,0,6,1,fbA,2
+9,1,0,0,5,1,fbB,0
+10,1,1,1,9,1,line,4
+11,1,1,0,7,1,fbB,2
+12,1,0,0,6,0,friend,1
+13,1,1,1,7,1,line,3
+14,1,0,1,5,1,fbA,1
+15,1,1,0,8,1,fbB,2
+16,0,0,0,,1,fbA,0
