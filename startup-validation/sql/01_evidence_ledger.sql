@@ -1,3 +1,5 @@
+-- Source: playbook Appendix B (startup-validation-playbook-v3_1.md, lines 2096-2222), copied verbatim
+-- except for the [FIX] block at the end of this file.
 create table contacts (
   id bigserial primary key,
   created_at timestamptz not null default now(),
@@ -125,3 +127,10 @@ from evidence e
 join interviews i on i.id = e.interview_id
 join contacts c on c.id = i.contact_id
 group by e.assumption_id;
+
+-- [FIX] Supabase grants anon/authenticated full access to public tables and views by default.
+-- RLS blocks the tables, but views run with their owner's rights and skip RLS, so anon could
+-- read the K1-K5 aggregates. Revoke the API roles; the dashboard (postgres) and service_role keep access.
+revoke all on contacts, assumptions, interviews, evidence, offers, site_events, decisions,
+  v_k, v_offers, v_site, v_community_share, v_evidence_score
+  from anon, authenticated;
