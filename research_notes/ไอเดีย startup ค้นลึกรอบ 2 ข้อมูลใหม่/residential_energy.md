@@ -59,7 +59,7 @@ Dates are publication dates from the cited page. "undated" means the page showed
 - [ESTIMATE] TransitionZero satellite-based estimate: 3.60 GW rooftop (range 3.02–4.17 GW, ±16%); notes Thailand exceeds Malaysia and Vietnam in installations on smaller rooftops (<1,000 m²), but trails Vietnam overall. Source: TransitionZero, 2025-11-26 (updated 2026-01-20): https://www.transitionzero.org/insights/a-new-baseline-for-thailands-rooftop-solar-deployment
 - [FACT] IRENA: cumulative Thai solar 6,842 MW at end-2025, vs 3,388 MW end-2024. Source: pv magazine, 2026-09-10: https://www.pv-magazine.com/2026/09/10/thailand-paves-the-way-for-10-gw-of-rooftop-solar/
 - [FACT] DEDE rooftop about 3.3 GW end-2024. Source: pv magazine, 2026-09-10 (above); consistent with IEEFA table (3,310 MW for 2024).
-- [FACT] IEEFA reports 2023 rooftop growth of 32% YoY per DEDE (TransitionZero citing DEDE, 2026-01-20). Also 2023 rooftop 1.77 GWp = 35% of total solar (as of late 2023, DEDE). Source: TransitionZero (above).
+- [FACT] Rooftop capacity grew 32% YoY in 2023 per DEDE (as cited by TransitionZero, 2026-01-20). Also 2023 rooftop 1.77 GWp = 35% of total solar (as of late 2023, DEDE). Source: TransitionZero (above).
 
 ### 2c. Household-only installed count
 - **UNVERIFIED / gap**: no official household-only installed count (MW or number of homes) was found. Official series above are rooftop self-generation including C&I. The 90 MW residential quota is a small subset (see IEEFA).
@@ -120,7 +120,7 @@ Note: Listed for coverage. Not ranked. Funding figures are marked by source qual
 - [FACT] Installer and battery products face the same TIS / label scrutiny (OCPB, May 2026). Source: section 3a.
 - [FACT] Under the Sep 2026 household scheme, BESS is permitted (Pattaya Mail, 2026-06-29). Source: section 1.
 - [UNVERIFIED] EcoFlow headline: "launches 5–30 kWh residential ESS" (pv magazine sidebar, 2026-10-14). Only the headline was seen. Source: https://www.pv-magazine.com/2026/09/10/thailand-paves-the-way-for-10-gw-of-rooftop-solar/ (sidebar).
-- [FACT] PDP 2026 draft: 50% of new solar from 2031–2040 to include batteries; 100% of new projects from 2041 (ESTIMATE of Thai planning assumption). Source: Thansettakij, 2026-04-22 (above).
+- [FACT] PDP 2026 draft planning assumption (draft, not final): 50% of new solar projects installed 2031–2040 (พ.ศ. 2574–2583) to include batteries; 100% of new projects from 2041 (พ.ศ. 2584). Source: Thansettakij, 2026-04-22 (above).
 
 ### 4c. EV home and public chargers
 - **SHARGE Management (Thailand)**. Founded 2018. Home, fleet, condo, and lifestyle charging network. Funding conflicting: Tracxn (2025-04-11) lists as unfunded; LinkedIn company page lists USD 1.4M venture round dated 2024-08-01. [UNVERIFIED: funding]. Sources: Tracxn: https://tracxn.com/d/explore/energy-storage-tech-startups-in-thailand/__JcJV_s5jkj-I_buGaGHL3OGJHGbIjnnCGoXGAFI2iVg/companies ; LinkedIn: https://linkedin.com/company/sharge-management
@@ -169,7 +169,7 @@ Note: Listed for coverage. Not ranked. Funding figures are marked by source qual
 - [FACT] Ft for May–Aug 2569 calculation: cost 80.60 satang (fuel and purchase 29.66 + accumulated AF 50.94). Claw-back 13.43 satang (THB 9,471.84M) brings billed Ft to 16.23. Source: PEA PDF (above).
 - [FACT] Sep–Dec 2569 calculation: cost 41.27 satang; claw-back THB 16,127.17M (25.04 satang) brings billed Ft to 16.23; EGAT absorbs AF of THB 31,268M on behalf of customers. Source: Bangkok Biz, 2026-07-23 (above).
 - [FACT] From May 2570, actual natural-gas price differences for IPP/SPP and EGAT/PTT contracts to be billed gradually (Thai PBS, 2026-09-18). Source: https://www.thaipbs.or.th/news/content/558131
-- [OPINION] Ft now relies on one-off claw-back funds; without them Sep–Dec 2569 Ft would be about 41 satang (ESTIMATE from ERC cost figure minus claw-back).
+- [ESTIMATE] Ft now relies on one-off claw-back funds; without them Sep–Dec 2569 Ft would be about 41 satang (ERC cost figure 41.27 minus claw-back 25.04, my arithmetic).
 
 ### 5b. Average rate and base tariff
 - [FACT] All-type average (incl. Ft, excl. VAT): 3.94 (Sep–Dec 2568, ERC doc), 3.88 (Jan–Apr 2569, ERC doc), 3.95 (May–Aug 2569 and before Sep 2569, ERC), 3.86 (from Sep 2569, ERC release 2026-08-13). Sources: ERC release: https://www.erc.or.th/th/news-release/3472 ; Thai PBS, 2026-08-13: https://www.thaipbs.or.th/news/content/509373
@@ -182,7 +182,7 @@ Note: Listed for coverage. Not ranked. Funding figures are marked by source qual
 - [FACT] Households without a permanent house registration but with permanent residential use and at least 6 months of bill history can apply for the residential rate from 2026-09-15 (PEA). Same source.
 - [FACT] Government says ~21 million households benefit; estimated saving THB 18,000M. Source: Thai Government, 2026-08-30: https://www.thaigov.go.th/th/news/168276
 
-### 5d. Trend (OPINION-free summary)
+### 5d. Trend (summary)
 - Ft fell from 39.72 (2567) to 9.72 (Jan–Apr 2569), then rose to 16.23 (May 2569 onward). Average all-type tariff: 3.94 (Sep 2568) → 3.95 (May 2569) → 3.86 (Sep 2569). Source: ERC and PEA as above.
 
 ---
