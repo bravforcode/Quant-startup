@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ตรวจความทนทานผลทดสอบ EA (prototype)</title>
+<style>
+:root {
+  --bg: #f7f7f5; --fg: #1d1d1b; --muted: #5f5f5a; --card: #ffffff; --line: #d9d9d3;
+  --accent: #1f5fbf; --ok: #1b7a3a; --bad: #b3261e; --warn: #8a5a00;
+  --note-bg: #fff4dc; --note-fg: #7a4f00;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141414; --fg: #f2f2ee; --muted: #a9a9a2; --card: #1e1e1d; --line: #34342f;
+    --accent: #7fb0ff; --ok: #7bd69a; --bad: #ff9b92; --warn: #ffd27a;
+    --note-bg: #3a2f14; --note-fg: #ffd27a;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141414; --fg: #f2f2ee; --muted: #a9a9a2; --card: #1e1e1d; --line: #34342f;
+  --accent: #7fb0ff; --ok: #7bd69a; --bad: #ff9b92; --warn: #ffd27a;
+  --note-bg: #3a2f14; --note-fg: #ffd27a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: "Noto Sans Thai", "Sarabun", "Tahoma", system-ui, sans-serif; line-height: 1.6;
+}
+main { max-width: 720px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 24px; margin: 8px 0 4px; }
+h2 { font-size: 17px; margin: 0 0 10px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.note { color: var(--muted); font-size: 14px; margin: 4px 0; }
+.banner {
+  background: var(--note-bg); color: var(--note-fg); border-radius: 8px; padding: 10px 12px; font-size: 14px; margin: 12px 0 16px;
+}
+code { font-size: 13px; }
+input[type="file"], textarea {
+  width: 100%; margin-top: 8px; font: inherit; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px; padding: 8px;
+}
+.row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+button {
+  font: inherit; font-weight: 600; color: #fff; background: var(--accent);
+  border: 0; border-radius: 8px; padding: 10px 14px; cursor: pointer;
+}
+button.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+.error { color: var(--bad); font-size: 14px; min-height: 1.4em; margin: 8px 0 0; }
+.verdict-text { font-size: 22px; font-weight: 700; margin: 0 0 6px; }
+.verdict-ok { color: var(--ok); }
+.verdict-bad { color: var(--bad); }
+.verdict-warn { color: var(--warn); }
+ul.checks { list-style: none; padding: 0; margin: 0; }
+ul.checks li { padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+ul.checks li:last-child { border-bottom: 0; }
+.tag { font-weight: 700; margin-right: 6px; }
+.pass { color: var(--ok); }
+.fail { color: var(--bad); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+svg.curve { width: 100%; height: auto; display: block; background: var(--bg); border-radius: 8px; }
+.hidden { display: none; }
+footer { font-size: 13px; color: var(--muted); margin: 24px 0 12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>ตรวจความทนทานผลทดสอบ EA</h1>
+  <p class="note">Prototype สำหรับทดลองและสาธิต</p>
+  <div class="banner">
+    ผลนี้ไม่ใช่คำแนะนำการลงทุน และไม่รับประกันผลในอนาคต เกณฑ์ทั้งหมดเป็นค่าเบื้องต้นของ prototype ยังไม่ผ่านการปรับเทียบทางสถิติ
+    ข้อมูลถูกประมวลผลในเบราว์เซอร์ของคุณเท่านั้น ไม่ถูกส่งไปที่ใด
+  </div>
+
+  <section class="card">
+    <h2>1. ใส่ข้อมูลการเทรด</h2>
+    <p class="note">ไฟล์ CSV ต้องมีคอลัมน์ <code>profit</code> (หรือ <code>net profit</code>, <code>pnl</code>) และควรมี <code>close_time</code> เพื่อเรียงตามเวลา เวลาแบบ MT5 เช่น <code>2026.10.02 10:00</code> อ่านได้ทันที</p>
+    <input type="file" id="file" accept=".csv,text/csv">
+    <textarea id="paste" rows="5" placeholder="หรือวางข้อความ CSV ที่นี่"></textarea>
+    <div class="row">
+      <button id="run" type="button">ตรวจ</button>
+      <button id="sample" type="button" class="secondary">ลองด้วยข้อมูลตัวอย่าง (สังเคราะห์)</button>
+    </div>
+    <p class="error" id="error" role="alert"></p>
+  </section>
+
+  <section id="result" class="hidden" aria-live="polite">
+    <div class="card">
+      <h2>ผลการตรวจ</h2>
+      <p class="verdict-text" id="verdict"></p>
+      <p class="note" id="verdictNote"></p>
+    </div>
+
+    <div class="card">
+      <h2>เช็กลิสต์เบื้องต้น</h2>
+      <ul class="checks" id="checks"></ul>
+    </div>
+
+    <div class="card">
+      <h2>สรุปผล</h2>
+      <table id="summary"></table>
+    </div>
+
+    <div class="card">
+      <h2>กำไรสะสม</h2>
+      <svg class="curve" id="curve" viewBox="0 0 640 220" preserveAspectRatio="none" role="img" aria-label="กราฟกำไรสะสม"></svg>
+      <p class="note" id="cutNote"></p>
+    </div>
+
+    <div class="card">
+      <h2>สับลำดับการเทรด (Monte Carlo)</h2>
+      <table id="mc"></table>
+      <p class="note" id="mcNote"></p>
+    </div>
+  </section>
+
+  <footer>
+    prototype v0.1 · เกณฑ์และการคำนวณอยู่ใน <code>engine.js</code> · ทดสอบด้วย <code>node --test test/engine.test.js</code>
+  </footer>
+</main>
+
+<script src="engine.js"></script>
+<script src="sample_data.js"></script>
+<script>
+(function () {
+  "use strict";
+  const R = window.Robustness;
+  const el = (id) => document.getElementById(id);
+  const fmt = (x, d = 2) => (Number.isFinite(x) ? x.toLocaleString("th-TH", { minimumFractionDigits: d, maximumFractionDigits: d }) : "ไม่มีรายการขาดทุน");
+  const pct = (x) => (x * 100).toFixed(1) + "%";
+
+  function setRow(table, cells) {
+    const tr = document.createElement("tr");
+    cells.forEach((c, i) => {
+      const td = document.createElement(i === 0 ? "th" : "td");
+      if (i > 0) td.className = "num";
+      td.textContent = c;
+      tr.appendChild(td);
+    });
+    table.appendChild(tr);
+  }
+
+  function renderCurve(trades) {
+    const svg = el("curve");
+    const curve = R.equityCurve(trades);
+    const W = 640, H = 220, pad = 10;
+    const lo = Math.min(0, ...curve), hi = Math.max(0, ...curve);
+    const span = hi - lo || 1;
+    const x = (i) => pad + (i / Math.max(1, curve.length - 1)) * (W - 2 * pad);
+    const y = (v) => H - pad - ((v - lo) / span) * (H - 2 * pad);
+    const points = curve.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+    const zeroY = y(0).toFixed(1);
+    svg.innerHTML = "";
+    const NS = "http://www.w3.org/2000/svg";
+    const zero = document.createElementNS(NS, "line");
+    zero.setAttribute("x1", pad); zero.setAttribute("x2", W - pad);
+    zero.setAttribute("y1", zeroY); zero.setAttribute("y2", zeroY);
+    zero.setAttribute("stroke", "currentColor"); zero.setAttribute("stroke-opacity", "0.3");
+    svg.appendChild(zero);
+    const line = document.createElementNS(NS, "polyline");
+    line.setAttribute("points", points);
+    line.setAttribute("fill", "none");
+    line.setAttribute("stroke", "var(--accent)");
+    line.setAttribute("stroke-width", "2");
+    svg.appendChild(line);
+  }
+
+  function render(trades) {
+    const a = R.assess(trades);
+    const verdictEl = el("verdict");
+    verdictEl.textContent = a.verdict;
+    verdictEl.className = "verdict-text " + (a.verdict.startsWith("ผ่าน") ? "verdict-ok"
+      : a.verdict === "ไม่ผ่าน" ? "verdict-bad" : "verdict-warn");
+    el("verdictNote").textContent = a.verdict === "ข้อมูลไม่พอ"
+      ? `ต้องมีอย่างน้อย ${a.config.minTrades} รายการ เพื่อให้เช็กลิสต์มีความหมาย`
+      : "อ่านผลนี้ร่วมกับเช็กลิสต์ด้านล่าง ไม่ใช่คำตัดสินว่ากลยุทธ์จะได้กำไรหรือไม่";
+
+    const list = el("checks");
+    list.innerHTML = "";
+    a.checks.forEach((c) => {
+      const li = document.createElement("li");
+      const tag = document.createElement("span");
+      tag.className = "tag " + (c.pass ? "pass" : "fail");
+      tag.textContent = c.pass ? "ผ่าน" : "ไม่ผ่าน";
+      li.appendChild(tag);
+      li.appendChild(document.createTextNode(c.label));
+      list.appendChild(li);
+    });
+
+    const s = el("summary");
+    s.innerHTML = "";
+    setRow(s, ["", "ค่า"]);
+    setRow(s, ["จำนวนรายการ", String(a.full.n)]);
+    setRow(s, ["กำไรสุทธิ", fmt(a.full.net)]);
+    setRow(s, ["Win rate", pct(a.full.winRate)]);
+    setRow(s, ["Profit factor", a.full.profitFactor === Infinity ? "ไม่มีรายการขาดทุน" : fmt(a.full.profitFactor)]);
+    setRow(s, ["กำไรเฉลี่ยต่อรายการ", fmt(a.full.expectancy)]);
+    setRow(s, ["Max drawdown", fmt(a.full.maxDrawdown)]);
+    setRow(s, ["In-sample: จำนวน / กำไรเฉลี่ย", `${a.walkForward.inSample.n} / ${fmt(a.walkForward.inSample.expectancy)}`]);
+    setRow(s, ["Out-of-sample: จำนวน / กำไรเฉลี่ย", `${a.walkForward.outOfSample.n} / ${fmt(a.walkForward.outOfSample.expectancy)}`]);
+
+    const m = el("mc");
+    m.innerHTML = "";
+    setRow(m, ["", "Max drawdown"]);
+    setRow(m, ["ลำดับจริง", fmt(a.monteCarlo.actual)]);
+    setRow(m, ["มัธยฐานของการสับลำดับ", fmt(a.monteCarlo.median)]);
+    setRow(m, [`เปอร์เซ็นไทล์ที่ ${Math.round(a.config.mcPercentile * 100)} ของการสับลำดับ`, fmt(a.monteCarlo.p95)]);
+    el("mcNote").textContent = `สับลำดับ ${a.monteCarlo.runs} ครั้งด้วย seed คงที่ ผลเดิมจากไฟล์เดิมจะได้ตัวเลขเดิมเสมอ`;
+
+    el("cutNote").textContent = `เส้นแบ่ง in-sample / out-of-sample อยู่หลังรายการที่ ${a.walkForward.cut} (แบ่งตามเวลาปิดออเดอร์)`;
+    renderCurve(trades);
+    el("result").classList.remove("hidden");
+  }
+
+  function run(text) {
+    el("error").textContent = "";
+    try {
+      const trades = R.parseTrades(text);
+      if (trades.length === 0) throw new Error("ไม่พบรายการเทรด");
+      render(trades);
+    } catch (err) {
+      el("result").classList.add("hidden");
+      el("error").textContent = err.message;
+    }
+  }
+
+  el("run").addEventListener("click", () => {
+    const file = el("file").files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => run(String(reader.result));
+      reader.readAsText(file);
+    } else {
+      run(el("paste").value);
+    }
+  });
+  el("sample").addEventListener("click", () => {
+    el("paste").value = "";
+    el("file").value = "";
+    run(window.SAMPLE_TRADES_CSV);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ตรวจกลยุทธ์ EA ก่อนเปิดบัญชีจริง</title>
+<style>
+:root {
+  --bg: #f7f7f5; --fg: #1d1d1b; --muted: #5f5f5a; --card: #ffffff;
+  --accent: #1f5fbf; --line: #d9d9d3; --draft-bg: #fff4dc; --draft-fg: #7a4f00;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141414; --fg: #f2f2ee; --muted: #a9a9a2; --card: #1e1e1d;
+    --accent: #7fb0ff; --line: #34342f; --draft-bg: #3a2f14; --draft-fg: #ffd27a;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141414; --fg: #f2f2ee; --muted: #a9a9a2; --card: #1e1e1d;
+  --accent: #7fb0ff; --line: #34342f; --draft-bg: #3a2f14; --draft-fg: #ffd27a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: "Noto Sans Thai", "Sarabun", "Tahoma", system-ui, sans-serif;
+  line-height: 1.6;
+}
+main { max-width: 480px; margin: 0 auto; padding: 16px; }
+.draft {
+  background: var(--draft-bg); color: var(--draft-fg); border-radius: 8px;
+  padding: 10px 12px; font-size: 14px; margin-bottom: 16px;
+}
+.badge {
+  display: inline-block; font-size: 13px; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; margin: 0 0 12px;
+}
+h1 { font-size: 26px; line-height: 1.3; margin: 0 0 12px; }
+h2 { font-size: 18px; margin: 0 0 12px; }
+.sub { color: var(--muted); margin: 0 0 20px; }
+.benefits { list-style: none; padding: 0; margin: 0 0 24px; }
+.benefits li {
+  background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 10px;
+}
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+label { display: block; font-size: 14px; margin-bottom: 12px; }
+input[type="email"], textarea {
+  width: 100%; margin-top: 6px; padding: 10px; font: inherit; color: var(--fg);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+}
+.check { display: flex; gap: 8px; align-items: flex-start; color: var(--muted); }
+.check input { margin-top: 4px; }
+.tiers { display: grid; gap: 8px; margin-bottom: 12px; }
+.tiers label {
+  display: flex; gap: 10px; align-items: center; margin: 0;
+  border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer;
+}
+.tiers small { color: var(--muted); display: block; }
+button {
+  width: 100%; padding: 12px; font: inherit; font-weight: 600; color: #fff;
+  background: var(--accent); border: 0; border-radius: 8px; cursor: pointer;
+}
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.msg { font-size: 14px; color: var(--muted); min-height: 1.5em; margin: 10px 0 0; }
+footer { font-size: 13px; color: var(--muted); margin: 24px 0 8px; }
+.small { font-size: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="draft">
+    ร่างสำหรับตรวจ ยังไม่เผยแพร่ ก่อนเผยแพร่ต้องแทนข้อความในวงเล็บ [ ] ตั้งค่า <code>API_BASE</code>
+    และลบกล่องนี้ออก ดูขั้นตอนใน README
+  </div>
+
+  <p class="badge">ต้นแบบ / early access · ไม่ใช่คำแนะนำการลงทุน · ยังไม่เปิดรับชำระเงิน</p>
+  <h1 id="headline">หยุดเปิดบัญชีจริงด้วยกลยุทธ์ที่ยังไม่ผ่านการตรวจ</h1>
+  <p class="sub">สำหรับนักพัฒนา EA บน MT5 ที่ทำ backtest เองแล้ว ส่งผลทดสอบมา รับรายงานความทนทานตามความเหมาะสมของกลยุทธ์</p>
+
+  <ul class="benefits">
+    <li>[ประโยชน์ที่ 1 จากคำพูดจริงของลูกค้า]</li>
+    <li>[ประโยชน์ที่ 2 จากคำพูดจริงของลูกค้า]</li>
+    <li>[ประโยชน์ที่ 3 จากคำพูดจริงของลูกค้า]</li>
+  </ul>
+
+  <section class="card">
+    <h2>ขอสิทธิ์ early access</h2>
+    <form id="signupForm">
+      <label>อีเมล
+        <input type="email" name="email" required autocomplete="email">
+      </label>
+      <label>ตอนนี้คุณเช็กกลยุทธ์ก่อนเปิดจริงยังไง?
+        <textarea name="biggest_pain" rows="3" maxlength="500"></textarea>
+      </label>
+      <label class="check">
+        <input type="checkbox" name="consent" required>
+        <span>ยินยอมให้ [ชื่อผู้ให้บริการ] เก็บอีเมลและข้อความนี้เพื่อติดต่อเรื่องการทดสอบบริการ ฉันยกเลิกได้ทุกเมื่อ</span>
+      </label>
+      <button type="submit" id="signupBtn" disabled>ขอสิทธิ์ early access</button>
+      <p class="msg" id="signupMsg" role="status"></p>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>สั่งซื้อการตรวจรอบแรก</h2>
+    <p class="small">ราคาต่อไปนี้เป็นราคาทดสอบเท่านั้น ยังไม่ใช่ราคาขาย</p>
+    <form id="orderForm">
+      <div class="tiers">
+        <label><input type="radio" name="tier" value="990" required> 990 บาท <small>รายงานความทนทานพื้นฐาน</small></label>
+        <label><input type="radio" name="tier" value="2490"> 2,490 บาท <small>รายงานพร้อมการทดสอบเพิ่มเติม</small></label>
+        <label><input type="radio" name="tier" value="4990"> 4,990 บาท <small>รายงานครบชุดพร้อมการทบทวน</small></label>
+      </div>
+      <label>อีเมลสำหรับใบสั่งซื้อ
+        <input type="email" name="order_email" required autocomplete="email">
+      </label>
+      <label class="check">
+        <input type="checkbox" name="order_consent" required>
+        <span>ยินยอมให้ [ชื่อผู้ให้บริการ] เก็บอีเมลและรายการสั่งซื้อนี้เพื่อดำเนินการคำสั่งซื้อ ฉันยกเลิกได้ทุกเมื่อ</span>
+      </label>
+      <button type="submit" id="orderBtn" disabled>ยังไม่เปิดรับชำระเงิน</button>
+      <p class="msg" id="orderMsg" role="status"></p>
+    </form>
+  </section>
+
+  <footer>
+    <a href="#privacy">ประกาศความเป็นส่วนตัว</a> · [ชื่อผู้ให้บริการ] · [อีเมลติดต่อ]
+    <p id="privacy" class="small">[วางข้อความประกาศความเป็นส่วนตัวจาก consent_and_notice_draft.md หลังผ่านการตรวจ]</p>
+  </footer>
+</main>
+
+<script>
+// Neon Data API base URL for this project, for example https://<project>.apirest.<region>.neon.tech/<db>/rest/v1
+// Empty string keeps both forms disabled, so nothing is sent until it is set.
+// Before setting it, confirm how the Data API authenticates anonymous requests in the Neon console.
+const API_BASE = "";
+
+// Flip to true only after a payment provider is connected and the order step redirects to it.
+const PAYMENT_READY = false;
+
+// Must match the consent text the visitor sees. Change it whenever the wording changes.
+const CONSENT_VERSION = "consent-v0.1-draft";
+
+const VARIANTS = {
+  a: "หยุดเปิดบัญชีจริงด้วยกลยุทธ์ที่ยังไม่ผ่านการตรวจ",
+  b: "รู้ก่อนเปิดจริงว่ากลยุทธ์ของคุณรอดหรือเปล่า โดยไม่ต้องเดา",
+};
+
+const params = new URLSearchParams(location.search);
+const variant = params.get("v") === "b" ? "b" : "a";
+document.getElementById("headline").textContent = VARIANTS[variant];
+
+const signupForm = document.getElementById("signupForm");
+const signupBtn = document.getElementById("signupBtn");
+const signupMsg = document.getElementById("signupMsg");
+const orderForm = document.getElementById("orderForm");
+const orderBtn = document.getElementById("orderBtn");
+const orderMsg = document.getElementById("orderMsg");
+
+if (API_BASE) {
+  signupBtn.disabled = false;
+} else {
+  signupMsg.textContent = "ยังไม่ได้เชื่อมฐานข้อมูล ฟอร์มนี้ยังส่งไม่ได้";
+}
+if (PAYMENT_READY && API_BASE) {
+  orderBtn.disabled = false;
+  orderBtn.textContent = "สั่งซื้อและไปชำระเงิน";
+} else {
+  orderMsg.textContent = "การชำระเงินยังไม่เปิด ฟอร์มนี้จะเปิดเมื่อผู้ก่อตั้งเชื่อมผู้ให้บริการชำระเงินแล้ว";
+}
+
+// Neon Data API (PostgREST) inserts. Prefer: return=minimal because anon has no SELECT rights.
+async function insertRow(table, row) {
+  const res = await fetch(`${API_BASE}/${table}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Prefer": "return=minimal" },
+    body: JSON.stringify(row),
+  });
+  if (!res.ok) throw new Error(String(res.status));
+}
+
+signupForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  signupBtn.disabled = true;
+  signupMsg.textContent = "กำลังส่ง...";
+  const data = new FormData(signupForm);
+  try {
+    await insertRow("waitlist_signups", {
+      email: data.get("email"),
+      biggest_pain: data.get("biggest_pain") || null,
+      // waitlist_signups has no variant column, so the A/B arm is stored inside source.
+      source: `${params.get("src") || "direct"}|v=${variant}`,
+      utm: location.search || null,
+      consent_given: true,
+      consent_version: CONSENT_VERSION,
+    });
+    signupForm.reset();
+    signupMsg.textContent = "ได้รับแล้ว ขอบคุณครับ/ค่ะ";
+  } catch (err) {
+    signupMsg.textContent = "ส่งไม่สำเร็จ ลองใหม่อีกครั้ง";
+  } finally {
+    signupBtn.disabled = !API_BASE;
+  }
+});
+
+orderForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!PAYMENT_READY) return;
+  orderBtn.disabled = true;
+  orderMsg.textContent = "กำลังบันทึกคำสั่งซื้อ...";
+  const data = new FormData(orderForm);
+  try {
+    await insertRow("orders", {
+      email: data.get("order_email"),
+      tier_thb: Number(data.get("tier")),
+      consent_given: true,
+      consent_version: CONSENT_VERSION,
+      source: `${params.get("src") || "direct"}|v=${variant}`,
+      utm: location.search || null,
+    });
+    // The payment step goes here: redirect to the provider's checkout for this order.
+    orderMsg.textContent = "บันทึกคำสั่งซื้อแล้ว";
+  } catch (err) {
+    orderMsg.textContent = "บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง";
+  } finally {
+    orderBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
