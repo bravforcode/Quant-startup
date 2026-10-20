@@ -63,7 +63,9 @@ Setup, once:
 
 Keep the connection string in a password manager. Do not commit it. `apply.sh` creates the `anon` and `authenticated` roles because Neon does not have them. The scripts were tested on PostgreSQL 16.15, not yet on Neon itself. If step 2 fails on role creation or grants, keep the error text and check it against this README.
 
-Neon has no built-in REST API, so the fake-door form in `validation/p01-ea-validation/landing/index.html` cannot write to it directly. Use a small server function that holds the connection string in its environment. That function is not built yet.
+The landing page writes through the Neon Data API (PostgREST). The `anon` role can insert into `waitlist_signups` (with consent) and `orders` (pending, at a listed test tier), and nothing else. Set `API_BASE` in `validation/p01-ea-validation/landing/index.html` to the project's Data API URL. Before that, enable the Data API and confirm how it authenticates anonymous requests in the Neon console, because sources disagree on whether it is generally available on the free plan. If it is not available, use a Cloudflare Worker that holds the connection string in its environment instead.
+
+Neon's free plan allows the Data API only where the console offers it. Re-run `test_schema.sh` after any change to `anon` grants.
 
 ## Stage 4 tier rules (kpi.py)
 

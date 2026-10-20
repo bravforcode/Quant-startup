@@ -25,7 +25,7 @@ $$;
 grant anon, authenticated to current_user;
 SQL
 
-for f in 01_evidence_ledger.sql 02_waitlist.sql 03_keepalive.sql 04_seed_assumptions.sql; do
+for f in 01_evidence_ledger.sql 02_waitlist.sql 03_keepalive.sql 04_seed_assumptions.sql 05_consent_and_orders.sql; do
   echo "applying $f"
   psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -q -f "$dir/$f"
 done
