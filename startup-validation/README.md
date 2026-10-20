@@ -4,6 +4,8 @@ Tools for the Zero-Budget Startup Validation Playbook v4.0. Everything here is f
 
 Project status against the P01 plan lives in `validation/p01-ea-validation/STATUS.md`.
 
+**Current direction (2026-10-20):** a prototype for grant and fundraising applications, not the full validation plan. See `mvp/robustness-check/` (browser prototype, `dist/robustness-check.html` is the one-file version) and `funding/` (verified funding options and the application pack with the "proven / not yet proven" split).
+
 ## Layout
 
 ```
